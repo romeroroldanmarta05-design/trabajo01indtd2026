@@ -183,7 +183,7 @@ Para completar el análisis, representamos gráficamente cómo varía la valorac
 dibuja.criterio.Hurwicz(tabla1, favorable = FALSE)
 ```
 
-La gráfica permite observar cómo cambia la valoración de botas, zapatos y sandalias cuando el índice de optimismo varía entre 0 y 1. De esta manera, podemos comparar visualmente las alternativas y comprobar cómo influye el grado de optimismo en la decisión.
+La gráfica permite observar cómo cambia la valoración de botas, zapatos y sandalias cuando el índice de optimismo varía entre 0 y 1. En esta situación desfavorable, al tratarse de costes, se busca seleccionar la alternativa con el menor valor. De esta manera, podemos comparar visualmente las alternativas y comprobar cómo influye el grado de optimismo en la decisión.
 
 
 **Criterio de Savage**
