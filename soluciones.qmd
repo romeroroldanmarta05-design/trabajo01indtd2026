@@ -1,0 +1,428 @@
+
+---
+title: "Trabajo 1. Métodos de decisión bajo incertidumbre"
+subtitle: "Soluciones de los problemas"
+author: "Marta Romero Roldán"
+lang: es
+format:
+  html:
+    toc: true
+    toc-title: "Índice"
+  typst:
+    toc: true
+    toc-title: "Índice"
+---
+
+
+{{< pagebreak >}}
+
+
+# Problema 1. Fabricación de calzado
+
+## Enunciado
+
+Una empresa dedicada a la fabricación de calzado debe decidir qué tipo de producto comercializar durante la próxima temporada. La demanda de sus productos depende de las condiciones climatológicas, que no pueden conocerse con certeza en el momento de tomar la decisión.
+
+La empresa contempla tres alternativas de producción: **botas, zapatos y sandalias**. Asimismo, considera tres posibles estados de la naturaleza: una temporada **fría, templada o cálida**.
+
+Tras realizar un estudio de mercado, la empresa ha obtenido las siguientes estimaciones de resultados económicos, expresadas en miles de euros:
+
+```{r}
+source("teoriadecision_funciones_incertidumbre.R", encoding = "UTF-8")
+
+tabla1 <- crea.tablaX(
+  c(70, 25, 5,
+    30, 45, 20,
+    5, 20, 65),
+  numalternativas = 3,
+  numestados = 3
+)
+
+rownames(tabla1) <- c("Botas", "Zapatos", "Sandalias")
+colnames(tabla1) <- c("Frío", "Templado", "Cálido")
+
+knitr::kable(tabla1)
+```
+
+Determine qué alternativa de producción resulta más conveniente aplicando los distintos criterios de decisión bajo incertidumbre. Realice el análisis considerando, por una parte, que los resultados económicos representan beneficios que se desean maximizar y, por otra, que representan costes que se pretenden minimizar. Para el criterio de Hurwicz, considere un índice de optimismo de $\alpha = 0.3$.
+
+## Planteamiento
+
+- **Decisor:** empresa fabricante de calzado.
+
+- **Modelo:** decisión bajo incertidumbre, tanto favorable (maximización de beneficios) como desfavorable (minimización de costes).
+
+- **Alternativas:**
+    - d1 = Botas.
+    - d2 = Zapatos.
+    - d3 = Sandalias.
+
+- **Estados de la naturaleza:**
+    - e1 = Frío.
+    - e2 = Templado.
+    - e3 = Cálido.
+
+## Introducción de datos
+
+La matriz de decisión está formada por los resultados económicos correspondientes a cada alternativa y estado de la naturaleza.
+
+```{r}
+tabla1
+```
+
+## Solución
+
+### Situación favorable: maximización de beneficios
+
+Consideramos que los valores de la tabla representan beneficios, por lo que buscamos la alternativa que maximice el resultado según cada criterio.
+
+**Criterio de Wald**
+
+```{r}
+criterio.Wald(tabla1, favorable = TRUE)
+```
+
+El criterio de Wald selecciona **zapatos**, ya que su beneficio mínimo es 20 mil euros, superior al beneficio mínimo de las otras dos alternativas.
+
+
+**Criterio Optimista**
+
+```{r}
+criterio.Optimista(tabla1, favorable = TRUE)
+```
+
+El criterio Optimista selecciona **botas**, ya que es la alternativa que puede proporcionar el mayor beneficio, con un valor de 70 mil euros.
+
+**Criterio de Hurwicz**
+
+```{r}
+criterio.Hurwicz(tabla1, alfa = 0.3, favorable = TRUE)
+```
+
+Aplicando el criterio de Hurwicz con un índice de optimismo de $\alpha = 0.3$, la mejor alternativa es **zapatos**, con un valor de 27.5 mil euros.
+
+Este criterio combina el mejor y el peor resultado de cada alternativa, teniendo en cuenta el grado de optimismo establecido.
+
+
+
+#### Representación gráfica del criterio de Hurwicz
+
+Para completar el análisis, representamos gráficamente cómo varía la valoración de las alternativas en función del índice de optimismo $\alpha$.
+
+```{r}
+dibuja.criterio.Hurwicz(tabla1, favorable = TRUE)
+```
+
+La gráfica permite observar cómo cambia la valoración de botas, zapatos y sandalias cuando el índice de optimismo varía entre 0 y 1. De esta manera, podemos comparar visualmente las alternativas y comprobar cómo influye el grado de optimismo en la decisión.
+
+
+
+**Criterio de Savage**
+
+```{r}
+criterio.Savage(tabla1, favorable = TRUE)
+```
+
+Según el criterio de Savage, la mejor alternativa es **zapatos**, ya que presenta el menor arrepentimiento máximo, con un valor de 45 mil euros.
+
+**Criterio de Laplace**
+
+```{r}
+criterio.Laplace(tabla1, favorable = TRUE)
+```
+
+El criterio de Laplace considera que todos los estados de la naturaleza son igualmente probables. La mejor alternativa es **botas**, con un beneficio medio aproximado de 33.33 mil euros.
+
+**Criterio del Punto Ideal**
+
+```{r}
+criterio.PuntoIdeal(tabla1, favorable = TRUE)
+```
+
+Este criterio selecciona la alternativa que se encuentra a menor distancia del punto ideal, formado por los mejores resultados de cada estado de la naturaleza.
+
+En este caso, la mejor alternativa es **zapatos**, con una distancia aproximada de 60.21.
+
+### Situación desfavorable: minimización de costes
+
+Ahora consideramos que los valores de la tabla representan costes económicos. Por tanto, el objetivo será seleccionar la alternativa que permita minimizar dichos costes.
+
+**Criterio de Wald**
+
+```{r}
+criterio.Wald(tabla1, favorable = FALSE)
+```
+
+El criterio de Wald selecciona **zapatos**, ya que su coste máximo es de 45 mil euros, inferior al coste máximo de las demás alternativas.
+
+**Criterio Optimista**
+
+```{r}
+criterio.Optimista(tabla1, favorable = FALSE)
+```
+
+El criterio Optimista selecciona **botas y sandalias**, puesto que ambas alternativas pueden alcanzar el menor coste posible, de 5 mil euros.
+
+En este caso, existe un empate entre las dos alternativas.
+
+**Criterio de Hurwicz**
+
+```{r}
+criterio.Hurwicz(tabla1, alfa = 0.3, favorable = FALSE)
+```
+
+Con un índice de optimismo de $\alpha = 0.3$, el criterio de Hurwicz recomienda fabricar **zapatos**, con un coste ponderado de 37.5 mil euros.
+
+
+
+#### Representación gráfica del criterio de Hurwicz
+
+Para completar el análisis, representamos gráficamente cómo varía la valoración de las alternativas en función del índice de optimismo $\alpha$.
+
+```{r}
+dibuja.criterio.Hurwicz(tabla1, favorable = FALSE)
+```
+
+La gráfica permite observar cómo cambia la valoración de botas, zapatos y sandalias cuando el índice de optimismo varía entre 0 y 1. De esta manera, podemos comparar visualmente las alternativas y comprobar cómo influye el grado de optimismo en la decisión.
+
+
+**Criterio de Savage**
+
+```{r}
+criterio.Savage(tabla1, favorable = FALSE)
+```
+
+El criterio de Savage selecciona **zapatos**, ya que presenta el menor arrepentimiento máximo, con un valor de 25 mil euros.
+
+**Criterio de Laplace**
+
+```{r}
+criterio.Laplace(tabla1, favorable = FALSE)
+```
+
+El criterio de Laplace recomienda fabricar **sandalias**, puesto que presenta el menor coste medio, de 30 mil euros.
+
+**Criterio del Punto Ideal**
+
+```{r}
+criterio.PuntoIdeal(tabla1, favorable = FALSE)
+```
+
+En la situación desfavorable, el punto ideal está formado por los menores costes de cada estado de la naturaleza.
+
+La alternativa seleccionada es **zapatos**, con una distancia aproximada de 38.41.
+
+## Conclusión
+
+Los resultados obtenidos muestran que la alternativa más conveniente depende tanto del criterio de decisión utilizado como de si se pretende maximizar beneficios o minimizar costes.
+
+En la situación favorable, los criterios de Wald, Hurwicz, Savage y Punto Ideal seleccionan zapatos, mientras que Optimista y Laplace recomiendan botas.
+
+En la situación desfavorable, Wald, Hurwicz, Savage y Punto Ideal también seleccionan zapatos. Sin embargo, el criterio Optimista presenta un empate entre botas y sandalias, mientras que Laplace recomienda sandalias.
+
+Por tanto, no existe una única alternativa óptima para todos los criterios, ya que cada uno considera de manera diferente los resultados posibles ante la incertidumbre.
+
+
+## Resolución de las cuestiones
+
+A continuación, se analizan las cinco afirmaciones del enunciado, indicando si son verdaderas o falsas y justificando cada respuesta.
+
+**a)** En la situación favorable, los criterios de Wald y Laplace seleccionan la misma alternativa, a pesar de utilizar procedimientos de decisión diferentes.
+
+**Falsa.** El criterio de Wald selecciona fabricar zapatos, ya que presenta el mayor beneficio mínimo (20 mil euros). Sin embargo, Laplace selecciona fabricar botas, puesto que proporciona el mayor beneficio medio (33.33 mil euros).
+
+**b)** Si se pretende maximizar los beneficios, el criterio de Hurwicz con un índice de optimismo de $\alpha = 0.3$ recomienda fabricar botas.
+
+**Falsa.** Aplicando el criterio de Hurwicz con $\alpha = 0.3$, se obtiene un valor de 27.5 mil euros para zapatos, que es superior al de las demás alternativas. Por tanto, se recomienda fabricar zapatos y no botas.
+
+**c)** En la situación desfavorable, el criterio de Savage selecciona la misma alternativa que el criterio Optimista.
+
+**Falsa.** El criterio de Savage selecciona fabricar zapatos, con un arrepentimiento máximo de 25 mil euros. En cambio, el criterio Optimista selecciona botas y sandalias, ya que ambas pueden alcanzar un coste mínimo de 5 mil euros.
+
+**d)** En la situación favorable, el criterio de Savage recomienda fabricar zapatos, aunque el criterio Optimista selecciona fabricar botas.
+
+**Verdadera.** Savage selecciona zapatos porque presenta el menor arrepentimiento máximo, de 45 mil euros. Por su parte, el criterio Optimista selecciona botas, ya que puede proporcionar el mayor beneficio posible, de 70 mil euros.
+
+**e)** Si los resultados representan costes, el criterio de Wald recomienda fabricar botas, mientras que el criterio de Laplace selecciona fabricar zapatos.
+
+**Falsa.** En la situación desfavorable, Wald selecciona zapatos, puesto que su coste máximo es de 45 mil euros. Por otro lado, Laplace selecciona sandalias, que presenta el menor coste medio, de 30 mil euros.
+
+
+{{< pagebreak >}}
+
+
+# Problema 2. Elección de universidad
+
+## Enunciado
+
+Lucía acaba de finalizar sus estudios de Bachillerato y debe decidir en qué universidad cursará el próximo año académico. Tras conocer sus notas de admisión, tiene la posibilidad de estudiar en **Sevilla, Granada o Málaga**. Las tres universidades ofrecen la titulación que desea, pero sus gastos serán diferentes dependiendo de la ciudad elegida.
+
+Lucía vive en Sevilla, por lo que, si decide quedarse allí, podrá continuar en su domicilio familiar sin pagar alojamiento. Sin embargo, deberá desplazarse diariamente a la facultad, lo que le supondrá unos gastos de transporte de **60 euros mensuales**. Además, la matrícula del curso le costará **900 euros**.
+
+Si elige **Granada**, tendrá que alquilar una habitación por **220 euros al mes**, a lo que deberá añadir **45 euros mensuales de transporte**. En esta universidad, el precio de la matrícula será de **850 euros**.
+
+Por último, si decide estudiar en **Málaga**, deberá pagar **300 euros mensuales por una habitación** y **40 euros al mes en transporte**. El coste de la matrícula ascenderá a **1.000 euros**.
+
+Para comparar las tres opciones, Lucía considera que el curso académico tendrá una duración de **10 meses** y que los demás gastos personales serán similares en las tres ciudades.
+
+Además, Lucía ha solicitado una ayuda económica de movilidad ofrecida por un programa universitario para estudiantes que cursan sus estudios fuera de su ciudad de residencia. Si finalmente se la conceden, recibirá **2.000 euros anuales si estudia en Granada** o **3.000 euros si elige Málaga**. En cambio, si permanece en Sevilla, no podrá beneficiarse de esta ayuda. La resolución de la solicitud todavía está pendiente y Lucía no dispone de información suficiente para estimar la probabilidad de obtenerla.
+
+**¿Qué universidad le recomendaría usted que eligiese, si su objetivo es minimizar los costes de su primer año académico?**
+
+## Planteamiento
+
+- **Decisor:** Lucía, estudiante que debe elegir universidad.
+- **Modelo:** decisión bajo incertidumbre en situación desfavorable, ya que se pretende minimizar los costes.
+- **Alternativas:**
+    - d1 = Sevilla.
+    - d2 = Granada.
+    - d3 = Málaga.
+- **Estados de la naturaleza:**
+    - e1 = Obtener la beca.
+    - e2 = No obtener la beca.
+
+## Introducción de datos
+
+Para construir la tabla de decisión, calculamos el coste total del curso académico en cada universidad, considerando los gastos de matrícula, alojamiento y transporte durante los 10 meses.
+
+**Sevilla:**
+
+Coste = 900 + 60 × 10 = 1.500 euros.
+
+Como Lucía no puede recibir la beca si permanece en Sevilla, el coste es el mismo en ambos estados.
+
+**Granada:**
+
+Sin beca: 850 + (220 + 45) × 10 = 3.500 euros.
+
+Con beca: 3.500 - 2.000 = 1.500 euros.
+
+**Málaga:**
+
+Sin beca: 1.000 + (300 + 40) × 10 = 4.400 euros.
+
+Con beca: 4.400 - 3.000 = 1.400 euros.
+
+La tabla de decisión resultante es:
+
+```{r}
+tabla2 <- crea.tablaX(
+  c(1500, 1500,
+    1500, 3500,
+    1400, 4400),
+  numalternativas = 3,
+  numestados = 2
+)
+
+rownames(tabla2) <- c("Sevilla", "Granada", "Málaga")
+colnames(tabla2) <- c("Con beca", "Sin beca")
+
+knitr::kable(tabla2)
+```
+
+
+## Solución
+
+Como Lucía desea minimizar los costes de su primer año académico, nos encontramos ante una situación desfavorable.
+
+Aplicamos los criterios de decisión bajo incertidumbre utilizando la función `criterio.Todos()`.
+
+```{r}
+solucion2 <- criterio.Todos(tabla2, alfa = 0.5, favorable = FALSE)
+
+knitr::kable(solucion2)
+```
+
+### Interpretación de los resultados
+
+**Criterio de Wald**
+
+El criterio de Wald considera el peor resultado de cada alternativa, que en este caso corresponde al coste máximo.
+
+Los costes máximos son 1.500 euros para Sevilla, 3.500 euros para Granada y 4.400 euros para Málaga. Por tanto, selecciona **Sevilla**.
+
+**Criterio Optimista**
+
+Este criterio considera el menor coste que podría alcanzarse con cada alternativa.
+
+Los costes mínimos son 1.500 euros para Sevilla, 1.500 euros para Granada y 1.400 euros para Málaga. Por tanto, selecciona **Málaga**.
+
+**Criterio de Hurwicz**
+
+Considerando un índice de optimismo de $\alpha = 0.5$, se combinan el mejor y el peor resultado de cada alternativa.
+
+Los valores obtenidos son:
+
+- Sevilla: 1.500 euros.
+- Granada: 2.500 euros.
+- Málaga: 2.900 euros.
+
+La alternativa seleccionada es **Sevilla**, ya que presenta el menor coste ponderado.
+
+**Criterio de Savage**
+
+Este criterio utiliza una matriz de arrepentimientos para determinar cuánto se pierde por no haber elegido la mejor alternativa en cada estado de la naturaleza.
+
+Los arrepentimientos máximos son:
+
+- Sevilla: 100 euros.
+- Granada: 2.000 euros.
+- Málaga: 2.900 euros.
+
+Por tanto, el criterio de Savage selecciona **Sevilla**.
+
+**Criterio de Laplace**
+
+El criterio de Laplace considera que los dos estados de la naturaleza son igualmente probables.
+
+Los costes medios son:
+
+- Sevilla: 1.500 euros.
+- Granada: 2.500 euros.
+- Málaga: 2.900 euros.
+
+La alternativa seleccionada es **Sevilla**.
+
+
+**Criterio del Punto Ideal**
+
+El criterio del Punto Ideal selecciona la alternativa más próxima a los menores costes de cada estado de la naturaleza.
+
+En este problema, el punto ideal está formado por los valores 1.400 y 1.500 euros, correspondientes a los estados con beca y sin beca, respectivamente.
+
+La alternativa seleccionada es **Sevilla**, con una distancia de 100.
+
+
+## Conclusión
+
+Tras aplicar los distintos criterios de decisión bajo incertidumbre, se observa que Sevilla es la alternativa seleccionada por Wald, Hurwicz, Savage, Laplace y Punto Ideal.
+
+Por el contrario, el criterio Optimista recomienda Málaga, ya que es la universidad que presenta el menor coste posible si Lucía obtiene la beca.
+
+En consecuencia, si Lucía desea evitar gastos elevados y mantener una mayor seguridad económica, la opción más recomendable sería estudiar en Sevilla.
+
+
+
+## Resolución de las cuestiones
+
+A continuación, se analizan las cinco afirmaciones del enunciado, indicando si son verdaderas o falsas y justificando cada respuesta.
+
+**a)** Aunque estudiar en Málaga supone el mayor coste si Lucía no obtiene la beca, es la alternativa seleccionada por el criterio Optimista.
+
+**Verdadera.** Si Lucía no obtiene la beca, Málaga presenta el mayor coste, con 4.400 euros. Sin embargo, el criterio Optimista considera el menor coste posible de cada alternativa. En este caso, Málaga puede alcanzar un coste de 1.400 euros si recibe la beca, por lo que es la alternativa seleccionada.
+
+**b)** Los criterios de Wald y Laplace conducen a la misma decisión, aunque uno considera el peor resultado y el otro el coste medio.
+
+**Verdadera.** Ambos criterios seleccionan Sevilla. Wald considera el coste máximo de cada alternativa y Sevilla presenta el menor, con 1.500 euros. Por su parte, Laplace calcula los costes medios, siendo Sevilla también la mejor alternativa, con 1.500 euros.
+
+**c)** Según el criterio de Savage, estudiar en Granada permite minimizar el máximo arrepentimiento.
+
+**Falsa.** El criterio de Savage selecciona Sevilla, ya que presenta un arrepentimiento máximo de 100 euros, frente a los 2.000 euros de Granada y los 2.900 euros de Málaga.
+
+**d)** Si se aplica el criterio de Hurwicz con $\alpha = 0.5$, las alternativas Sevilla y Granada resultan igualmente convenientes.
+
+**Falsa.** Aplicando Hurwicz con $\alpha = 0.5$, se obtiene un coste ponderado de 1.500 euros para Sevilla y de 2.500 euros para Granada. Por tanto, no son igualmente convenientes y se selecciona Sevilla.
+
+**e)** La elección de universidad es independiente del criterio de decisión utilizado, ya que Sevilla presenta el menor coste en ausencia de beca.
+
+**Falsa.** La decisión depende del criterio aplicado. Aunque Wald, Hurwicz, Savage, Laplace y Punto Ideal seleccionan Sevilla, el criterio Optimista recomienda Málaga. Por tanto, no todos los criterios conducen a la misma decisión.
